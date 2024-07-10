@@ -1,102 +1,75 @@
+import * as main_page from "../locators/main_page.json";
+import * as recovery_password_page from "../locators/recovery_password_page.json"
+import * as result_page from "../locators/result_page.json"
+import * as data from "../helpers/login_qa_data.json"
+
 describe('Проверка авторизации', function () {
 
+    beforeEach('Начало теста', function () {
+         cy.visit('/');
+         cy.get('#forgotEmailButton').should('have.css', 'color', 'rgb(0, 85, 152)');
+           });
+
+    afterEach('Конец теста', function () {
+         cy.get('#exitMessageButton > .exitIcon').should('be.visible');
+        });
+
    it('Верный логин и верный пароль', function () {
-        cy.visit('http://login.qa.studio/');
 
-        cy.get('#forgotEmailButton').should('have.css', 'color', 'rgb(0, 85, 152)');
-
-        cy.wait(50);
-
-
-        cy.get('#mail').type('german@dolnikov.ru');
-        cy.get('#pass').type('iLoveqastudio1');
-        cy.get('#loginButton').click();
-        cy.get('#messageHeader').contains('Авторизация прошла успешно');
-        cy.get('#messageHeader').should('be.visible');
-        cy.get('#exitMessageButton > .exitIcon').should('be.visible');
+        cy.get(main_page.email).type(data.login);
+        cy.get(main_page.password).type(data.password);
+        cy.get(main_page.login_button).click();
+        cy.get(result_page.title).contains('Авторизация прошла успешно');
+        cy.get(result_page.title).should('be.visible');
      
-
-   
     })
 
    it('Проверка восстановления пароля ', function () {
-        cy.visit('http://login.qa.studio/');
-
-        cy.get('#forgotEmailButton').should('have.css', 'color', 'rgb(0, 85, 152)');
-
-        cy.get('#forgotEmailButton').click();
-        cy.get('#mailForgot').type('german@dolnikov.ru');
-        cy.get('#restoreEmailButton').click();
-        cy.get('#messageHeader').contains('Успешно отправили пароль на e-mail');
-        cy.get('#messageHeader').should('be.visible');
-        cy.get('#exitMessageButton > .exitIcon').should('be.visible');
-     
-
+        
+        cy.get(main_page.forgot_pass_btn).click();
+        cy.get(recovery_password_page.email).type(data.login);
+        cy.get(recovery_password_page.send_button).click();
+        cy.get(result_page.title).contains('Успешно отправили пароль на e-mail');
+        cy.get(result_page.title).should('be.visible');
    
     })
 
    it('Верный логин, не верный пароль', function () {
-        cy.visit('http://login.qa.studio/');
-
-        cy.get('#forgotEmailButton').should('have.css', 'color', 'rgb(0, 85, 152)');
-
-
-        cy.get('#mail').type('german@dolnikov.ru');
-        cy.get('#pass').type('iLoveqastudio4');
-        cy.get('#loginButton').click();
-        cy.get('#messageHeader').contains('Такого логина или пароля нет');
-        cy.get('#messageHeader').should('be.visible');
-        cy.get('#exitMessageButton > .exitIcon').should('be.visible');
-     
-
-   
+        
+        cy.get(main_page.email).type(data.login);
+        cy.get(main_page.password).type('iLoveqastudio4');
+        cy.get(main_page.login_button).click();
+        cy.get(result_page.title).contains('Такого логина или пароля нет');
+        cy.get(result_page.title).should('be.visible');
+      
     })
 
    it('Не верный логин и верный пароль', function () {
-        cy.visit('http://login.qa.studio/');
-
-        cy.get('#forgotEmailButton').should('have.css', 'color', 'rgb(0, 85, 152)');
-
-
-        cy.get('#mail').type('german777@dolnikov.ru');
-        cy.get('#pass').type('iLoveqastudio1');
-        cy.get('#loginButton').click();
-        cy.get('#messageHeader').contains('Такого логина или пароля нет');
-        cy.get('#messageHeader').should('be.visible');
-        cy.get('#exitMessageButton > .exitIcon').should('be.visible');
-     
-
+        
+        cy.get(main_page.email).type('german777@dolnikov.ru');
+        cy.get(main_page.password).type(data.password);
+        cy.get(main_page.login_button).click();
+        cy.get(result_page.title).contains('Такого логина или пароля нет');
+        cy.get(result_page.title).should('be.visible');
    
     })
 
    it('Проверка валидации на наличие @ в имене пользователя ', function () {
-        cy.visit('http://login.qa.studio/');
-
-        cy.get('#forgotEmailButton').should('have.css', 'color', 'rgb(0, 85, 152)');
-
-
-        cy.get('#mail').type('germandolnikov.ru');
-        cy.get('#pass').type('iLoveqastudio1');
-        cy.get('#loginButton').click();
-        cy.get('#messageHeader').contains('Нужно исправить проблему валидации');
-        cy.get('#messageHeader').should('be.visible');
-        cy.get('#exitMessageButton > .exitIcon').should('be.visible');
-     
-
+        
+        cy.get(main_page.email).type('germandolnikov.ru');
+        cy.get(main_page.password).type(data.password);
+        cy.get(main_page.login_button).click();
+        cy.get(result_page.title).contains('Нужно исправить проблему валидации');
+        cy.get(result_page.title).should('be.visible');
    
     })
 
    it('Проверка на приведение к строчным буквам в логине', function () {
-        cy.visit('http://login.qa.studio/');
-
-        cy.get('#forgotEmailButton').should('have.css', 'color', 'rgb(0, 85, 152)');
-
-
-        cy.get('#mail').type('GerMan@Dolnikov.ru');
-        cy.get('#pass').type('iLoveqastudio1');
-        cy.get('#loginButton').click();
-        cy.get('#messageHeader').contains('Такого логина или пароля нет');
-        cy.get('#messageHeader').should('be.visible');
+        
+        cy.get(main_page.email).type('GerMan@Dolnikov.ru');
+        cy.get(main_page.password).type(data.password);
+        cy.get(main_page.login_button).click();
+        cy.get(result_page.title).contains('Такого логина или пароля нет');
    
     })
 })
